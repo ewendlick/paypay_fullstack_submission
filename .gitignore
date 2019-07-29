@@ -1,0 +1,14 @@
+# Packages
+node_modules/
+_dist/
+.nuxt/
+coverage/
+
+# Log files
+logs/
+*.log
+
+# Miscellaneous
+.tmp/
+.vscode/
+.env
