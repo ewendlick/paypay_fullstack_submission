@@ -10,14 +10,16 @@ db.serialize(() => {
     if (err) {
       console.error(err.message)
     }
-    console.log(row.id + "\t" + row.name)
+    console.log('=== employees ===')
+    console.log(row)
   })
 
   db.each(`SELECT * FROM performance_reviews`, (err, row) => {
     if (err) {
       console.error(err.message)
     }
-    console.log(row.id + "\t" + row.name)
+    console.log('=== performance_reviews ===')
+    console.log(row)
   })
 })
 

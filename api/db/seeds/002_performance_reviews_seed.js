@@ -1,33 +1,26 @@
 'use strict'
 
-const { Employee, PerformanceReview } = require('../../server/models')
-
-exports.seed = (knex, Promise) => knex(PerformanceReview.tableName).del()
-  .then(() => Employee.findAll())
-  .then(employees => {
-    if (employees.length <= 0) throw 'No employees found'
-
-    return employees[0].employee_id
-  })
-  // TODO: need to pass in employeeIds for target and assignee
-  .then(employeeId => [
+exports.seed = async function(knex) {
+  await knex('performance_reviews').del()
+  // NOTE: Sqlite3 does not allow default values. All values are explicitly listed here
+  return knex('performance_reviews').insert([
     {
-      target_employee_id: employeeId,
-      assignee_employee_id: employeeId,
+      target_employee_id: 1,
+      assignee_employee_id: 2,
       payload: '',
-      created_at: knex.fn.now(), // TODO: remove when switching to non SQLite DB
-      updated_at: null, // TODO: remove when switching to non SQLite DB
-      deleted_at: null // TODO: remove when switching to non SQLite DB
+      completed_at: null,
+      created_at: knex.fn.now(),
+      updated_at: null,
+      deleted_at: null
     },
     {
-      target_employee_id: employeeId,
-      assignee_employee_id: employeeId,
+      target_employee_id: 2,
+      assignee_employee_id: 1,
       payload: '',
       completed_at: knex.fn.now(),
-      created_at: knex.fn.now(), // TODO: remove when switching to non SQLite DB
-      updated_at: null, // TODO: remove when switching to non SQLite DB
-      deleted_at: null // TODO: remove when switching to non SQLite DB
+      created_at: knex.fn.now(),
+      updated_at: null,
+      deleted_at: null
     }
   ])
-  .then(newPerformanceReviews => Promise.all(newPerformanceReviews.map(performanceReview => PerformanceReview.create(performanceReview))))
-  .catch(err => console.log('err: ', err))
+}

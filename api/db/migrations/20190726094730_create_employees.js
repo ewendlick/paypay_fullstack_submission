@@ -1,11 +1,10 @@
-// TODO: encoding, collation
-
 exports.up = knex => {
   return knex.schema.createTable('employees', table => {
+    table.charset('utf8mb4')
+    table.collate('utf8mb4_unicode_ci')
     table.increments('id').primary().unsigned()
     table.string('employee_name').unique().index()
     table.string('email').unique().index()
-    // TODO: Password
     table.timestamp('created_at').defaultTo(knex.fn.now())
     table.timestamp('updated_at').nullable()
     table.timestamp('deleted_at').nullable()

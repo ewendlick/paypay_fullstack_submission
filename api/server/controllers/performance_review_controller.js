@@ -1,6 +1,7 @@
 'use strict'
 
-const { PerformanceReview, Employee } = require('../models')
+const knex = require('../../config/database')
+// const { PerformanceReview, Employee } = require('../models')
 
 const postPerformanceReviews = (req, res, next) => {
   const employeeId = req.params.id

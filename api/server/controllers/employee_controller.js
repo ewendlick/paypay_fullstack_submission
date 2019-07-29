@@ -1,72 +1,154 @@
 'use strict'
 
-// TODO: A full system to handle created_at, updated_at, deleted_at, overwritable here
-const { Employee } = require('../models')
+// TODO: some documentation system especially for POST/PUT
+// TODO: tests
 
-const postEmployees = (req, res, next) => {
+const knex = require('../../config/database')
+
+// TODO: implement for non-Sqlite3 databases
+// Properties that are allowed to be selected from the database for reading.
+/*
+const selectableProps = [
+  'id',
+  'employeeName',
+  'email',
+  'created_at',
+  'updated_at',
+  'deleted_at'
+]
+*/
+
+const timeout = 1000
+
+// TODO: move to /lib
+const scrub = (props) => {
+  const notAllowedKeys = ['id', 'created_at', 'updated_at', 'deleted_at']
+
+  notAllowedKeys.forEach(notAllowedKey => delete props['notAllowedKey'])
+  return props
+}
+
+// TODO: whitelisting system
+
+const postEmployees = async (req, res, next) => {
   const props = req.body.employee
 
-  Employee.create(props)
-    .then(employee => res.json({
+  props = scrub(props)
+
+  props.created_at = new Date() // TODO: throw into a file in /lib and import
+
+  const result = await knex.insert(props)
+    // .returning(selectableProps) // NOTE: Not supported by Sqlite3
+    .into('employees')
+    .timeout(timeout)
+
+  if (result) {
+    res.json({
       ok: true,
       message: 'Employee created',
       employee
-    }))
-    .catch(next)
+    })
+  } else {
+  }
+  next()
 }
 
-const getEmployees = (req, res, next) => {
-  Employee.findAll()
-    .then(employees => res.json({
+// ADMIN
+const getEmployees = async (req, res, next) => {
+  const result = await knex.select()
+    .from('employees')
+    .whereNull('deleted_at')
+    .join('performance_reviews', 'employees.id', '=', 'performance_reviews.target_employee_id')
+    // .returning(selectableProps) // TODO: not supported in Sqlite3 :(
+    .timeout(timeout)
+
+  // TODO: error checking
+  if (result) {
+    res.json({
       ok: true,
       message: 'Employees found',
-      employees
-    }))
-    .catch(next)
+      result
+    })
+  } else {
+    // TODO: error system in place
+    // if (!props) return res.status(422)
+  }
+
+  next()
 }
 
+// FRONT
 const getEmployee = (req, res, next) => {
   const employeeId = req.params.id
 
-  Employee.findById(employeeId)
-    .then(employee => res.json({
+  const result = await knex.select({ id: employeeId})
+    .from('employees')
+    .whereNull('deleted_at')
+    .join('performance_reviews', 'employees.id', '=', 'performance_reviews.assignee_employee_id')
+    // .returning(selectableProps) // TODO: not supported in Sqlite3 :(
+    .timeout(timeout)
+
+  // TODO: error checking
+  if (result) {
+    res.json({
       ok: true,
-      message: 'Employee found',
-      employee
-    }))
-    .catch(next)
+      message: 'Employees found',
+      result
+    })
+  } else {
+    // TODO: error system in place
+    // if (!props) return res.status(422)
+  }
+
+  next()
 }
 
 const putEmployee = (req, res, next) => {
   const employeeId = req.params.id
   const props = req.body.employee
 
-  Employee.update(employeeId, props)
-    .then(employee => res.json({
+  props = scrub(props)
+
+  props.updated_at = new Date() // TODO: throw into a file in /lib and import
+
+  knex('employees')
+    .where({ id: employeeId })
+    .update({ ...props })
+
+  if (result) {
+    res.json({
       ok: true,
       message: 'Employee updated',
       employee
-    }))
-    .catch(next)
+    })
+  } else {
+  }
+  next()
 }
 
 const deleteEmployee = (req, res, next) => {
   const employeeId = req.params.id
+  const props = req.body.employee
 
-  // TODO: soft delete
-  Employee.destroy(employeeId)
-    .then(deleteCount => res.json({
+  props = scrub(props)
+
+  props.deleted_at = new Date() // TODO: throw into a file in /lib and import
+
+  if (result) {
+    res.json({
       ok: true,
       message: `Employee '${ employeeId }' deleted`,
-      deleteCount
-    }))
-    .catch(next)
+      employee
+    })
+  } else {
+  }
+  next()
 }
 
 module.exports = {
   postEmployees,
   getEmployees,
-  getEmployee,
+  // getEmployee,
   putEmployee,
   deleteEmployee
 }
