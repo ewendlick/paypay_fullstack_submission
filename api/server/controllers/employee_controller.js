@@ -32,9 +32,10 @@ const scrub = (props) => {
 
 // TODO: whitelisting system
 
-const postEmployees = async (req, res, next) => {
-  const props = req.body.employee
+const postEmployees = async (req, res) => {
+  let props = req.body.employee
 
+  // TODO: one line
   props = scrub(props)
 
   props.created_at = new Date() // TODO: throw into a file in /lib and import
@@ -48,15 +49,14 @@ const postEmployees = async (req, res, next) => {
     res.json({
       ok: true,
       message: 'Employee created',
-      employee
+      data: result
     })
   } else {
   }
-  next()
 }
 
 // ADMIN
-const getEmployees = async (req, res, next) => {
+const getEmployees = async (req, res) => {
   const result = await knex.select()
     .from('employees')
     .whereNull('employees.deleted_at')
@@ -75,12 +75,10 @@ const getEmployees = async (req, res, next) => {
   } else {
     // TODO: error system in place
     // if (!props) return res.status(422)
-    next()
   }
 }
 
-// FRONT
-const getEmployee = async (req, res, next) => {
+const getEmployee = async (req, res) => {
   const employeeId = req.params.id
 
   const result = await knex.select({ id: employeeId})
@@ -95,19 +93,17 @@ const getEmployee = async (req, res, next) => {
     res.json({
       ok: true,
       message: 'Employees found',
-      result
+      data: result
     })
   } else {
     // TODO: error system in place
     // if (!props) return res.status(422)
   }
-
-  next()
 }
 
-const putEmployee = async (req, res, next) => {
+const putEmployee = async (req, res) => {
   const employeeId = req.params.id
-  const props = req.body.employee
+  let props = req.body.employee
 
   props = scrub(props)
 
@@ -121,16 +117,16 @@ const putEmployee = async (req, res, next) => {
     res.json({
       ok: true,
       message: 'Employee updated',
-      employee
+      data: result
     })
   } else {
   }
-  next()
+
 }
 
-const deleteEmployee = async (req, res, next) => {
+const deleteEmployee = async (req, res) => {
   const employeeId = req.params.id
-  const props = req.body.employee
+  let props = req.body.employee
 
   props = scrub(props)
 
@@ -144,17 +140,16 @@ const deleteEmployee = async (req, res, next) => {
     res.json({
       ok: true,
       message: `Employee '${ employeeId }' deleted`,
-      employee
+      data: result
     })
   } else {
   }
-  next()
 }
 
 module.exports = {
   postEmployees,
   getEmployees,
-  // getEmployee,
+  getEmployee,
   putEmployee,
   deleteEmployee
 }

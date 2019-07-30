@@ -46,3 +46,10 @@ There's a huge amount of similarity between the /front and /admin folders, but t
 
 ## Where are all of the components?
 There's the Vuetify components, but this project doesn't need to be stratified across a number of components. It just has the src/pages/index.vue, and layouts/*.vue files.
+
+## Technologies used
+Vue
+Nuxt (SSR)
+Vuetify 2
+Express
+Knex

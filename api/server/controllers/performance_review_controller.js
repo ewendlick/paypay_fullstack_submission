@@ -1,8 +1,20 @@
 'use strict'
 
 const knex = require('../../config/database')
-// const { PerformanceReview, Employee } = require('../models')
 
+const timeout = 1000
+
+// TODO: move to /lib
+const scrub = (props) => {
+  if (!props || props.length === 0) return
+  const notAllowedKeys = ['id', 'created_at', 'updated_at', 'deleted_at']
+
+  notAllowedKeys.forEach(notAllowedKey => delete props['notAllowedKey'])
+  console.log(props)
+  return props
+}
+
+/*
 const postPerformanceReviews = (req, res, next) => {
   const employeeId = req.params.id
   const props = req.body.performanceReview
@@ -16,8 +28,58 @@ const postPerformanceReviews = (req, res, next) => {
     }))
     .catch(next)
 }
+*/
 
-const getPerformanceReviews = (req, res, next) => {
+// FRONT
+const getAssignedEmployeePerformanceReviewsForUser = async (req, res) => {
+  const employeeId = req.params.id
+  const result = await knex.select()
+    .from('performance_reviews')
+    .whereNull('performance_reviews.deleted_at')
+    .join('employees', 'performance_reviews.assignee_employee_id', '=', 'employees.id')
+    // .returning(selectableProps) // TODO: not supported in Sqlite3 :(
+    .timeout(timeout)
+
+  // TODO: error checking
+  if (result) {
+    console.log(result)
+    return res.json({
+      ok: true,
+      message: 'Performance Reviews found',
+      data: result
+    })
+  } else {
+    // TODO: error system in place
+    // return res.status(404)
+  }
+}
+
+// ADMIN
+const getTargetEmployeePerformanceReviewsForUser = async (req, res) => {
+  const employeeId = req.params.id
+
+  const result = await knex.select()
+    .from('performance_reviews')
+    .whereNull('performance_reviews.deleted_at')
+    .join('employees', 'performance_reviews.target_employee_id', '=', 'employees.id')
+    // .returning(selectableProps) // TODO: not supported in Sqlite3 :(
+    .timeout(timeout)
+
+  // TODO: error checking
+  if (result) {
+    res.json({
+      ok: true,
+      message: 'Employees found',
+      data: result
+    })
+  } else {
+    // TODO: error system in place
+    // if (!props) return res.status(422)
+  }
+}
+
+/*
+const getPerformanceReviews = (req, res) => {
   const employeeId = req.params.id
 
   PerformanceReview.findAll()
@@ -29,33 +91,58 @@ const getPerformanceReviews = (req, res, next) => {
     }))
     .catch(next)
 }
+*/
 
-const getPerformanceReview = (req, res, next) => {
+const getPerformanceReview = async (req, res) => {
   const performanceReviewId = req.params.id
 
-  PerformanceReview.findById(performanceReviewId)
-    .then(performanceReview => res.json({
+  const result = await knex.select()
+    .from('performance_reviews')
+    .where({ id: performanceReviewId })
+
+  if (result) {
+    res.json({
       ok: true,
       message: 'PerformanceReview found',
-      performanceReview
-    }))
-    .catch(next)
+      data: result
+    })
+  } else {
+    // TODO: Error system
+  }
 }
 
-const putPerformanceReview = (req, res, next) => {
+const putPerformanceReview = async (req, res) => {
   const performanceReviewId = req.params.id
-  const props = req.body.performanceReview
+  let props = req.body.data
 
-  PerformanceReview.update(performanceReviewId, props)
-    .then(performanceReview => res.json({
+  console.log(performanceReviewId)
+
+  props = scrub(props)
+
+  const now = new Date() // TODO: throw into a file in /lib and import
+  // console.log(...props)
+  props.updated_at = now
+  props.completed_at = now
+
+  const result = await knex('performance_reviews')
+    .where({ id: performanceReviewId })
+    .update(props)
+
+  console.log(result)
+
+  if (result) {
+    res.json({
       ok: true,
       message: 'PerformanceReview updated',
-      performanceReview
-    }))
-    .catch(next)
+      data: result
+    })
+  } else {
+    // TODO: Error system
+  }
 }
 
-const deletePerformanceReview = (req, res, next) => {
+/*
+const deletePerformanceReview = (req, res) => {
   const performanceReviewId = req.params.id
 
   PerformanceReview.destroy(performanceReviewId)
@@ -66,11 +153,14 @@ const deletePerformanceReview = (req, res, next) => {
     }))
     .catch(next)
 }
+*/
 
 module.exports = {
-  postPerformanceReviews,
-  getPerformanceReviews,
+  // postPerformanceReviews
+  getAssignedEmployeePerformanceReviewsForUser,
+  getTargetEmployeePerformanceReviewsForUser,
+  // getPerformanceReviews,
   getPerformanceReview,
-  putPerformanceReview,
-  deletePerformanceReview
+  putPerformanceReview
+  // deletePerformanceReview
 }
