@@ -5,6 +5,7 @@ exports.seed = async function (knex) {
   // NOTE: Sqlite3 does not allow default values. All values are explicitly listed here
   return knex('employees').insert([
     {
+      id: 1,
       employee_name: 'PW Herman',
       email: 'pw.herman@example.com',
       created_at: knex.fn.now(),
@@ -12,6 +13,7 @@ exports.seed = async function (knex) {
       deleted_at: null
     },
     {
+      id: 2,
       employee_name: 'Smash Lampjaw',
       email: 'smash.lampjaw@example.com',
       created_at: knex.fn.now(),

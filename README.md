@@ -39,6 +39,7 @@ There's a huge amount of similarity between the /front and /admin folders, but t
 ## What is missing?
 - Authentication
 - Authorization
+- API-side validation
 - Login
 - Tests
 - An actual logo

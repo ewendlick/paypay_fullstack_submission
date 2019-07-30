@@ -1,9 +1,12 @@
 'use strict'
 
 const express = require('express')
+const cors = require('cors')
 const bodyParser = require('body-parser')
 
 const app = express()
+
+app.use(cors({ allowedHeaders: ['Accept', 'Authorization', 'Cache-Control', 'X-Requested-With', 'Content-Type'] }))
 
 app.use(bodyParser.json())
 app.disable('x-powered-by')

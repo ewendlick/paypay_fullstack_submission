@@ -1,36 +1,36 @@
 <template>
   <v-layout row wrap>
-
-    <v-dialog v-if="currentExperimentsType === experimentsTypes.experiments" v-model="isEditFormShown" max-width="100%">
+    {{ employees }}====
+    <!--
+    <v-dialog v-if="employees" v-model="isEditFormShown" max-width="100%">
       <v-card>
         <v-card-title>
           <span class="headline">
-            {{ isNewExperiment ? 'New' : 'Edit' }} AB Testing
+
           </span>
         </v-card-title>
         <v-card-text>
           <v-container grid-list-md>
             <v-layout wrap>
-              <v-flex v-show="isNewExperiment" xs4 sm4 md2>
+              <v-flex v-show="false" xs4 sm4 md2>
                 <v-text-field
                   v-model.lazy="editedItem.key"
                   v-validate="'required'"
                   name="key"
-                  label="key"
-                  :error-messages="errors.first('key')" />
+                  label="key" />
               </v-flex>
-              <v-flex v-show="!isNewExperiment" xs4 sm4 md2>
+              <v-flex xs4 sm4 md2>
                 <v-text-field v-model="editedItem.key" name="key" label="key" disabled />
               </v-flex>
-              <v-flex xs8 sm6 md4 v-show="isNewExperiment">
+              <v-flex xs8 sm6 md4>
                 <v-text-field
                   v-model.lazy="editedItem.name"
                   v-validate="'required'"
                   name="name"
-                  label="name"
-                  :error-messages="errors.first('name')" />
+                  label="name" />
+                   Vee-validate (nuxt-validate) hook up :error-messages="errors.first('name')" />
               </v-flex>
-              <v-flex xs4 sm4 md2 v-show="!isNewExperiment">
+              <v-flex xs4 sm4 md2>
                 <v-text-field
                   v-model="editedItem.name"
                   name="name"
@@ -43,8 +43,8 @@
                   v-validate="'required'"
                   type="text"
                   label="note"
-                  name="note"
-                  :error-messages="errors.first('note')" />
+                  name="note"/>
+                   :error-messages="errors.first('note')" />
               </v-flex>
               <v-flex xs4 sm4 md2>
                 <v-text-field v-model.number="editedItem.chance" label="chance" type="number" />
@@ -53,10 +53,11 @@
                 Enabled: <v-switch v-model="editedItem.enabled" />
               </v-flex>
               <v-flex xs12>
-                <v-btn color="primary" dark @click="addVariants">
+                <v-btn color="primary" dark>
                   <v-icon>add</v-icon> Add Variants
                 </v-btn>
               </v-flex>
+
               <v-flex xs12>
                 <tr v-for="(variant, index) in editedItem.variants" :key="index">
                   <td class="pa-2">
@@ -65,8 +66,8 @@
                       v-validate="'required'"
                       :item="variant.name"
                       label="variant name"
-                      name="variantName"
-                      :error-messages="errors.first('variantName')" />
+                      name="variantName" />
+
                   </td>
                   <td class="pa-2">
                     <v-text-field
@@ -75,8 +76,8 @@
                       :item="variant.value"
                       type="number"
                       name="variantValue"
-                      label="variant value"
-                      :error-messages="errors.first('variantValue')" />
+                      label="variant value" />
+
                   </td>
                   <td class="pa-2">
                     {{ weightedValue(editedItem.variants, variant) }}
@@ -88,6 +89,7 @@
                   </td>
                 </tr>
               </v-flex>
+
             </v-layout>
           </v-container>
         </v-card-text>
@@ -102,22 +104,44 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
-
+    -->
+    <!-- :headers="headers" -->
+    <!-- :options.sync="options" -->
     <v-flex xs12>
+      <v-simple-table :fixed-header="true">
+        <thead>
+          <tr>
+            <th class="text-left">Performance Review Target Name</th>
+            <th class="text-left"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in employees" :key="item.employee_name">
+            <td>{{ item.employee_name }}</td>
+            <td>
+              ICON
+              {{ item.id }}
+            </td>
+          </tr>
+        </tbody>
+      </v-simple-table>
+
+
+
       <v-data-table
-        :expand="expand"
+        v-if="employees"
         :search="search"
-        :headers="currentExperimentsType === experimentsTypes.experiments ? headers: snapshotHeaders"
+        :items-per-page="5"
         :loading="isLoading"
         :no-data-text="isNoResults ? 'No data' : ''"
-        :pagination.sync="pagination"
-        :items="experiments ? experiments : currentExperiments.experiments"
-        item-key="key"
-        hide-actions
+        :headers="headers"
+        :items="employees"
+        item-key="employee_name"
+        hide-default-footer
         class="elevation-1">
+
         <template v-slot:items="props">
-          <tr :key="`row-${props.item.key}`">
+          <tr :key="`row-${props.item.employee_name}`">
             <td class="text-xs-center">
               <v-btn flat icon @click="props.expanded = !props.expanded">
                 <v-icon small>
@@ -126,39 +150,21 @@
                 </v-icon>
               </v-btn>
             </td>
+
             <td class="text-xs-center">
-              {{ props.item.key }}
-            </td>
-            <td class="text-xs-center">
-              {{ props.item.name }}
+              {{ props.item.employee_name }}
             </td>
             <td class="text-xs-center note">
-              {{ props.item.note }}
+              {{ props.item.email }}
             </td>
-            <td class="text-xs-center">
-              {{ props.item.chance }}
-            </td>
-            <td class="text-xs-center">
-              <template>
-                <timeago :datetime="props.item.createdAt" />
-              </template>
-              <br>{{ props.item.createdByEmployee && props.item.createdByEmployee.employeename }}
-            </td>
-            <td class="text-xs-center">
-                <timeago :datetime="props.item.editedAt" />
 
-              <br>{{ (props.item.editedByEmployee && props.item.editedByEmployee.employeename) || '-' }}
-            </td>
-            <td class="text-xs-center" v-if="currentExperimentsType === experimentsTypes.experiments">
-              <v-switch v-model="props.item.enabled" class="pt-4" @change="switchUpdate(props.item.experimentId, props.item.enabled)" />
-            </td>
-            <td class="justify-center layout py-3" v-if="currentExperimentsType === experimentsTypes.experiments">
-              <v-btn flat icon @click="editItem(props.item.experimentId)">
+            <td class="justify-center layout py-3">
+              <v-btn flat icon @click="editItem(props.item.id)">
                 <v-icon small>
                   edit
                 </v-icon>
               </v-btn>
-              <v-btn v-if="isDeleteMode" flat icon @click="deleteItem(props.item.experimentId)">
+              <v-btn v-if="isDeleteMode" flat icon @click="deleteItem(props.item.id)">
                 <v-icon small>
                   delete
                 </v-icon>
@@ -166,10 +172,11 @@
             </td>
           </tr>
         </template>
+
         <template v-slot:expand="props">
           <v-layout row wrap>
             <v-flex xs12 ma-3>
-              <v-toolbar-title>Variance</v-toolbar-title>
+
               <th v-for="(header,index) in expandedTableHeaders" :key="`${header.value}-${index}`" class="text-xs-center font-weight-bold pa-3">
                 {{ header.text }}
               </th>
@@ -184,17 +191,20 @@
                   {{ weightedValue(props.item.variants,variant) }}
                 </td>
               </tr>
+
             </v-flex>
           </v-layout>
         </template>
+
+
         <template v-if="isNoResults" v-slot:no-results>
           <v-alert :value="true" color="error" icon="warning">
             Your search for "{{ search }}" found no results.
           </v-alert>
         </template>
       </v-data-table>
-    </v-flex>
 
+    </v-flex>
 
   </v-layout>
 </template>
@@ -203,61 +213,52 @@
 export default {
   head () {
     return {
-      title: 'Mymy Admin'
+      title: 'Mymy Front'
     }
   },
   data () {
     return {
-      isLoading: true,
+      employees: [],
+      // isLoading: true,
       search: null,
-      expand: false,
-      selectedCurrentExperiments: 'Current Draft',
       isEditFormShown: false,
-      isPublishDialogShown: false,
-      isRollbackDialogShown: false,
-      isDateFilterDialogShown: false,
-      isCompareExperimentDialogShown: false,
       isDeleteMode: false,
       isDeleteDialogShown: false,
-      experimentSnapshot: {},
-      experimentSnapshots: [],
-      currentExperimentsType: null,
-      currentExperiments: null,
-      pagination: {
-        rowsPerPage: ROWS_PER_PAGE,
+      /*
+      options: {
+        rowsPerPage: 10,
         totalItems: 0 // TODO get the total number of row from API?
       },
-      editedIndex: null,
-      editedItem: {
-        experimentId: null,
-        type: 'experiment',
-        key: '',
-        name: '',
-        note: '',
-        chance: 100,
-        variants: [{
-          name: null,
-          value: null
-        }],
-        enabled: true
-      },
-      sourceExperiments: null,
-      destinationExperiments: null,
-      sourceCompareItems: [],
-      destinationCompareItems: [],
-      sourceExperimentSelected: false,
-      destinationExperimentSelected: false,
-      sourceTree: [],
-      destinationTree: [],
-      dateFilterEvents: {}
+      */
+      editingIndex: null,
+      editingItem: {
+        id: null,
+        employee_name: '',
+        email: ''
+        // List of performance reviews to add or remove
+      }
+      ,
+      headers: [
+        {
+          text: ''
+        },
+        {
+          text: 'asdf'
+        },
+        {
+          text: 'dfg'
+        },
+        {
+          text: ''
+        }
+      ]
+
     }
   },
   computed: {
-    employee () {
-      return this.$store.state.employee
-    },
     isNoResults () {
-      return !this.isLoading && this.experiments.length === 0
+      return false
+      // return !this.isLoading && this.employees.length === 0
     }
   },
 
@@ -267,44 +268,46 @@ export default {
     }
   },
   async asyncData ({ app, redirect }) {
-    // if (!app.$can('experiment.read')) return redirect('/error', { message: 'Unauthorized' })
+    // TODO: set the base URL in Axios
+    // TODO: handle hydration issues with Vuetify's table
+    const response = await app.$axios.$get('http://localhost:9000/employees')
 
-    // const response = await app.$axios.$post('experiment/search')
-
-    /*
     return {
-      experiments: response.data,
-      pagination: { totalItems: response.data.length, rowsPerPage: ROWS_PER_PAGE },
+      employees: response.data,
+      // pagination: { totalItems: response.data.length },
+      // options: { totalItems: 5 },
       isLoading: false
     }
+  },
+  async created () {
+    // TODO: try server side again
+    /*
+    const response = await this.$axios.$get('http://localhost:9000/employees')
+    this.employees = response.data
     */
   },
-  /*
-  async created () {
-    await this.getExperimentSnapshots()
-  },
-  */
   methods: {
-
     async editItem (experimentId) {
       this.$validator.reset()
+      /*
       this.editedIndex = this.experiments.findIndex(item => item.experimentId === experimentId)
       const response = await this.$axios.$get(`experiment/${experimentId}`)
       this.editedItem = response.data
       this.isEditFormShown = true
+      */
     },
 
     async save () {
       await this.$validator.validateAll()
-      if (this.errors.any()) return
-      if (this.isNewExperiment) {
+      // if (this.errors.any()) return
+      if (true) {
         const createResponse = await this.$axios.$post('experiment', this.editedItem)
         const fetchResponse = await this.$axios.$get(`experiment/${createResponse.data.experimentId}`)
-        this.experiments.push(fetchResponse.data)
+        // this.experiments.push(fetchResponse.data)
       } else {
         await this.$axios.$patch(`experiment/${this.editedItem.experimentId}`, this.editedItem)
         const response = await this.$axios.$get(`experiment/${this.editedItem.experimentId}`)
-        this.$set(this.experiments, this.editedIndex, response.data)
+        // this.$set(this.experiments, this.editedIndex, response.data)
       }
       this.close()
     },
@@ -316,24 +319,6 @@ export default {
         this.editedIndex = null
         this.$validator.reset()
       }, 300)
-    },
-
-
-    async chooseDateFilter (version) {
-      this.currentExperiments = this.experimentSnapshots.find(r => r.version === version)
-      this.currentExperimentsType = this.experimentsTypes.snapshot
-
-      for (const date of Object.values(this.dateFilterEvents)) {
-        for (const event of date) {
-          event.open = false
-        }
-      }
-
-      this.selectedCurrentExperiments = this.getLabelFromExperiment(this.currentExperiments)
-
-      this.selectCurrentExperiments(this.selectedCurrentExperiments)
-
-      this.isDateFilterDialogShown = false
     }
   }
 }

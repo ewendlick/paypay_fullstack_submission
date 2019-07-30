@@ -22,9 +22,11 @@ const timeout = 1000
 
 // TODO: move to /lib
 const scrub = (props) => {
+  if (!props || props.length === 0) return
   const notAllowedKeys = ['id', 'created_at', 'updated_at', 'deleted_at']
 
   notAllowedKeys.forEach(notAllowedKey => delete props['notAllowedKey'])
+  console.log(props)
   return props
 }
 
@@ -57,28 +59,28 @@ const postEmployees = async (req, res, next) => {
 const getEmployees = async (req, res, next) => {
   const result = await knex.select()
     .from('employees')
-    .whereNull('deleted_at')
+    .whereNull('employees.deleted_at')
     .join('performance_reviews', 'employees.id', '=', 'performance_reviews.target_employee_id')
     // .returning(selectableProps) // TODO: not supported in Sqlite3 :(
     .timeout(timeout)
 
   // TODO: error checking
   if (result) {
-    res.json({
+    console.log(result)
+    return res.json({
       ok: true,
       message: 'Employees found',
-      result
+      data: result
     })
   } else {
     // TODO: error system in place
     // if (!props) return res.status(422)
+    next()
   }
-
-  next()
 }
 
 // FRONT
-const getEmployee = (req, res, next) => {
+const getEmployee = async (req, res, next) => {
   const employeeId = req.params.id
 
   const result = await knex.select({ id: employeeId})
@@ -103,7 +105,7 @@ const getEmployee = (req, res, next) => {
   next()
 }
 
-const putEmployee = (req, res, next) => {
+const putEmployee = async (req, res, next) => {
   const employeeId = req.params.id
   const props = req.body.employee
 
@@ -111,7 +113,7 @@ const putEmployee = (req, res, next) => {
 
   props.updated_at = new Date() // TODO: throw into a file in /lib and import
 
-  knex('employees')
+  const result = await knex('employees')
     .where({ id: employeeId })
     .update({ ...props })
 
@@ -126,13 +128,17 @@ const putEmployee = (req, res, next) => {
   next()
 }
 
-const deleteEmployee = (req, res, next) => {
+const deleteEmployee = async (req, res, next) => {
   const employeeId = req.params.id
   const props = req.body.employee
 
   props = scrub(props)
 
-  props.deleted_at = new Date() // TODO: throw into a file in /lib and import
+  // props.deleted_at = new Date() // TODO: throw into a file in /lib and import
+
+  const result = await knex('employees')
+    .where({ id: employeeId })
+    .update({ deleted_at: new Date() })
 
   if (result) {
     res.json({

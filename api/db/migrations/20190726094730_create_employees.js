@@ -1,7 +1,7 @@
 exports.up = knex => {
   return knex.schema.createTable('employees', table => {
-    table.charset('utf8mb4')
-    table.collate('utf8mb4_unicode_ci')
+    // table.charset('utf8mb4')
+    // table.collate('utf8mb4_unicode_ci')
     table.increments('id').primary().unsigned()
     table.string('employee_name').unique().index()
     table.string('email').unique().index()

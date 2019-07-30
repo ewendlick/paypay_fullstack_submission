@@ -1,9 +1,8 @@
 exports.up = knex => {
   return knex.schema.createTable('performance_reviews', table => {
-    table.charset('utf8mb4')
-    table.collate('utf8mb4_unicode_ci')
+    // table.charset('utf8mb4') // TODO: use with MySQL
+    // table.collate('utf8mb4_unicode_ci')
     table.increments('id').primary().unsigned()
-    // TODO: .onDelete('CASCADE') needs to tie into the "remove" soft delete functionality
     table.integer('target_employee_id').references('employees.id').unsigned().index()
     table.integer('assignee_employee_id').references('employees.id').unsigned().index()
     table.text('payload') // TODO: JSON type - table.json('payload'). See if sqlite can do it with a default installation
