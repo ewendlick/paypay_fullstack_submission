@@ -10,7 +10,6 @@
         <v-card-text>
           <v-container grid-list-md>
             <v-layout wrap>
-              <!-- TODO: show employee_id if !isCreate-->
               <v-flex xs6 sm4 md3>
                 <v-text-field v-model="editingItem.employee_name"
                               v-validate="'required|min:2|max:20'"
@@ -43,30 +42,19 @@
       </v-card>
     </v-dialog>
 
+    <v-btn class="ma-4" large outlined color="light-blue accent-3" @click="create">
+      Create new employee ＋
+    </v-btn>
 
-    {{ employees }}
-
-
-    <v-layout align-center justify-space-between>
-      <v-flex>
-
-      </v-flex>
-      <v-flex>
-
-      </v-flex>
-
-      <v-flex>
-        <!-- TODO: color of button -->
-        <v-btn large @click="create">
+    <!--
+    <v-layout justify-end>
+      <v-flex xs6>
+        <v-btn large outlined color="light-blue accent-3" class="ma-4" @click="create">
           Create new employee ＋
-          <!--
-          <v-icon right>
-            search
-          </v-icon>
-          -->
         </v-btn>
       </v-flex>
     </v-layout>
+    -->
 
     <v-layout row wrap>
       <v-flex xs12 md10>
@@ -130,7 +118,6 @@ export default {
         email: null
       },
       page: 1,
-      isDeleteMode: false, // TODO: active for certain users, or from a button click
       // Vuetify table requires that this be reactive
       headers: [
         {
@@ -202,16 +189,13 @@ export default {
       this.isEditFormShown = true
     },
     async edit (employeeId) {
-      console.log('edit', employeeId)
       this.errors.clear()
 
       this.isCreate = false
 
-      // this.editingIndex = this.employees.findIndex(item => item.employee_id === employeeId)
-
       // Gets newest data from API. This could just use information we have and skip the API call
       const response = await this.$axios.$get(`http://localhost:9000/employees/${employeeId}`)
-      console.log('edt', response)
+
       this.editingItem = response.data[0]
 
       this.isEditFormShown = true
