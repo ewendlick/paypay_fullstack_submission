@@ -120,7 +120,6 @@ const putPerformanceReview = async (req, res) => {
   props = scrub(props)
 
   const now = new Date() // TODO: throw into a file in /lib and import
-  // console.log(...props)
   props.updated_at = now
   props.completed_at = now
 

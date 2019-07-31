@@ -35,7 +35,7 @@ const scrub = (props) => {
 const postEmployees = async (req, res) => {
   let props = req.body.employee
 
-  // TODO: one line
+  // TODO: one line in all locations
   props = scrub(props)
 
   props.created_at = new Date() // TODO: throw into a file in /lib and import
@@ -55,7 +55,6 @@ const postEmployees = async (req, res) => {
   }
 }
 
-// ADMIN
 const getEmployees = async (req, res) => {
   const result = await knex.select()
     .from('employees')
@@ -66,7 +65,6 @@ const getEmployees = async (req, res) => {
 
   // TODO: error checking
   if (result) {
-    console.log(result)
     return res.json({
       ok: true,
       message: 'Employees found',
@@ -103,6 +101,7 @@ const getEmployee = async (req, res) => {
 
 const putEmployee = async (req, res) => {
   const employeeId = req.params.id
+  // TODO: early returns on all PUT/POST/DELETE without payloads with 422 errors
   let props = req.body.employee
 
   props = scrub(props)

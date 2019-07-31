@@ -110,8 +110,7 @@ export default {
 
     // TODO: conversion of snakecase to camelcase on receiving API responses
     return {
-      performanceReviews: response.data,
-      isLoading: false
+      performanceReviews: response.data
     }
   },
   methods: {

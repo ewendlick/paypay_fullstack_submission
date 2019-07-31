@@ -1,12 +1,21 @@
 <template>
-    <div>error</div>
+  <div>
+    <h1>{{ error.statusCode }}</h1>
+    <p>{{ error.message }}</p>
+  </div>
 </template>
 
 <script>
 export default {
-    data() {
-        return {}
+  props: {
+    error: {
+      type: Object,
+      default: () => {}
     }
+  },
+  data() {
+    return {}
+  }
 }
 </script>
 <style lang="scss" scoped></style>
