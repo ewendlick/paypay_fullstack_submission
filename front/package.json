@@ -1,5 +1,5 @@
 {
-    "name": "mymy-front",
+    "name": "feedback-front",
     "version": "0.1.0",
     "description": "Front section of a certain company's coding challenge",
     "main": "src/index.js",

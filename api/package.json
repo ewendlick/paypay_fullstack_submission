@@ -1,5 +1,5 @@
 {
-  "name": "mymy-api",
+  "name": "feedback-api",
   "version": "0.1.0",
   "description": "An example knex app structure.",
   "main": "server/index.js",

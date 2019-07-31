@@ -232,7 +232,7 @@
 export default {
   head () {
     return {
-      title: 'Mymy Admin'
+      title: 'Feedback Admin'
     }
   },
   data () {

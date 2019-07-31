@@ -79,7 +79,7 @@ export default {
   // TODO: confirm this in here
   head () {
     return {
-      title: 'Mymy Front'
+      title: 'Feedback Front'
     }
   },
   data () {
@@ -159,10 +159,6 @@ export default {
 </script>
 
 <style lang="scss">
-  .v-content__wrap {
-    // TODO: revist. Maybe just the header
-    background: linear-gradient(107deg, rgb(37, 96, 159) 0%, rgb(20, 37, 54) 100%);
-  }
 </style>
 
 <style lang="scss" scoped>

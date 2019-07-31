@@ -42,7 +42,7 @@ There's a huge amount of similarity between the /front and /admin folders, but t
 - API-side validation
 - Login
 - Tests
-- An actual logo
+- Icons
 
 ## Where are all of the components?
 There's the Vuetify components, but this project doesn't need to be stratified across a number of components. It just has the src/pages/index.vue, and layouts/*.vue files.
@@ -53,3 +53,16 @@ Nuxt (SSR)
 Vuetify 2
 Express
 Knex
+
+## Assumptions
+I assume that the Front and Admin sections would diverge in the future or be loaded from different domains, which is why I made two separate directories. I know that a lot of the code is identical, and it makes me extremely uncomfortable to have duplicated code.
+
+## Goals
+Try out Knex
+Learn about upgrading Vuetify from 1.5 to 2
+Create an API that I can repurpose for another project
+Make something impressive with CSS3 animations
+Create a package.json script to do everything as opposed to running something from within each folder of the project
+
+## Difficulties
+Icons are not displaying. They should work out of the box with Vuetify, but something is going on. I've tried importing the icon stylesheets in a number of places and have confirmed that they load. I have tried both Material Design and Fontawesome
