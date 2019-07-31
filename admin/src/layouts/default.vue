@@ -39,7 +39,7 @@ export default {
 <style lang="scss">
   @import "~/assets/styles/base.scss";
 
-  .theme--light.v-sheet {
+  .theme--light.v-sheet > .v-toolbar__content, .v-card__title {
     background: linear-gradient(107deg, rgb(37, 96, 159) 0%, rgb(20, 37, 54) 100%);
     color: #efefef;
   }

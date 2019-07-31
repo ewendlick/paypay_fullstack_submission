@@ -33,7 +33,7 @@ const scrub = (props) => {
 // TODO: whitelisting system
 
 const postEmployees = async (req, res) => {
-  let props = req.body.employee
+  let props = req.body.data
 
   // TODO: one line in all locations
   props = scrub(props)
@@ -59,7 +59,6 @@ const getEmployees = async (req, res) => {
   const result = await knex.select()
     .from('employees')
     .whereNull('employees.deleted_at')
-    .join('performance_reviews', 'employees.employee_id', '=', 'performance_reviews.target_employee_id')
     // .returning(selectableProps) // TODO: not supported in Sqlite3 :(
     .timeout(timeout)
 

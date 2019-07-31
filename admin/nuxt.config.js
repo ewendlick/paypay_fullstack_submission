@@ -27,7 +27,13 @@ export default {
     plugins: [],
     modules: [
         '@nuxtjs/axios',
-        '@nuxtjs/vuetify'
+        '@nuxtjs/vuetify',
+        [
+            'nuxt-validate',
+            {
+              lang: 'en'
+            }
+        ]
     ],
     axios: {
         baseURL: ''

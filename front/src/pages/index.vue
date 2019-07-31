@@ -139,8 +139,6 @@ export default {
 
       this.editingIndex = this.performanceReviews.findIndex(item => item.performance_review_id === performanceReviewId)
 
-      console.log('editingIndex', this.editingIndex)
-
       const response = await this.$axios.$get(`http://localhost:9000/performance_reviews/${performanceReviewId}`)
       this.editingItem = response.data[0]
       this.editingItem.targetName = targetName

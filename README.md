@@ -1,17 +1,17 @@
 # Installation & Running
-cd ./api
-npm install
-npm run db:migrate (optional: this repo contains the sqlite3 db file)
-npm run db:seed (optional: this repo contains the sqlite3 db file)
-npm run start
+```cd ./api```
+```npm install```
+```npm run db:migrate``` (optional: this repo contains the sqlite3 db file)
+```npm run db:seed``` (optional: this repo contains the sqlite3 db file)
+```npm run start```
 
-cd ./front
-npm install
-npm run dev
+```cd ./front```
+```npm install```
+```npm run dev```
 
-cd ./admin
-npm install
-npm run dev
+```cd ./admin```
+```npm install```
+```npm run dev```
 
 # Accessing the site
 By default, the project will run on localhost:8000 for the Employee-facing section ("Front"), and localhost:8001 for the Admin-facing section ("Admin"). However, another random and higher port will be used if 8000/8001 are not available. Please note the output when running.
