@@ -1,6 +1,8 @@
 # Installation
-TODO:
-
+npm install
+npm run db:migrate (optional: this repo contains the sqlite3 db file)
+npm run db:seed (optional: this repo contains the sqlite3 db file)
+npm run start
 
 ## Folder Structure
 

@@ -9,7 +9,7 @@
       <template v-if="employee">
         <v-toolbar-title>{{ employee.name }}</v-toolbar-title>
         <v-avatar :size="36" class="ml-2">
-          <img :src="employee.avatarUrl"><!-- TODO: images for users in the DB? I think just randomizing this here would be fine -->
+          <img :src="employee.avatarUrl"><!-- TODO: images for users in the DB -->
         </v-avatar>
       </template>
     </v-app-bar>

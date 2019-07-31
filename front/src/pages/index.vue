@@ -1,6 +1,5 @@
 <template>
   <v-layout class="front-background" row wrap justify-center>
-    {{ performanceReviews }}
     <v-dialog v-model="isEditFormShown">
       <v-card>
         <v-card-title>
@@ -73,6 +72,7 @@
                 <!-- TODO: get the icon system working <v-icon>pencil</v-icon>-->
               </v-btn>
               <!--<v-icon v-if="item.completed_at">check_bold</v-icon>-->
+              <!-- TODO: animate in when updated -->
               <span v-if="item.completed_at" class="completed">✔ completed</span>
             </td>
           </tr>
@@ -149,7 +149,7 @@ export default {
     },
     async save () {
       await this.$validator.validateAll()
-      // Validation system
+      // Run validation
       if (this.errors.any()) return
 
       const performanceReview = {
@@ -158,10 +158,8 @@ export default {
 
       await this.$axios.$put(`http://localhost:9000/performance_reviews/${this.editingItem.performance_review_id}`, { data: performanceReview })
 
-      // Update the completed_at with a "good enough" number for instant updates without hitting the API
+      // Updates the completed_at with a "good enough" number for instant updates without hitting the API
       this.$set(this.performanceReviews[this.editingIndex], 'completed_at', moment().format())
-
-      // TODO: content into the performanceReviews object
 
       this.close()
     },
