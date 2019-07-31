@@ -3,7 +3,7 @@
 // Testing purposes
 
 const sqlite3 = require('sqlite3').verbose()
-const db = new sqlite3.Database('../mymydb.sqlite')
+const db = new sqlite3.Database('../feedbackdb.sqlite')
 
 db.serialize(() => {
   db.each(`SELECT * FROM employees`, (err, row) => {

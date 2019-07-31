@@ -23,7 +23,7 @@ const timeout = 1000
 // TODO: move to /lib
 const scrub = (props) => {
   if (!props || props.length === 0) return
-  const notAllowedKeys = ['id', 'created_at', 'updated_at', 'deleted_at']
+  const notAllowedKeys = ['employee_id', 'created_at', 'updated_at', 'deleted_at']
 
   notAllowedKeys.forEach(notAllowedKey => delete props['notAllowedKey'])
   console.log(props)
@@ -59,7 +59,7 @@ const getEmployees = async (req, res) => {
   const result = await knex.select()
     .from('employees')
     .whereNull('employees.deleted_at')
-    .join('performance_reviews', 'employees.id', '=', 'performance_reviews.target_employee_id')
+    .join('performance_reviews', 'employees.employee_id', '=', 'performance_reviews.target_employee_id')
     // .returning(selectableProps) // TODO: not supported in Sqlite3 :(
     .timeout(timeout)
 
@@ -79,10 +79,10 @@ const getEmployees = async (req, res) => {
 const getEmployee = async (req, res) => {
   const employeeId = req.params.id
 
-  const result = await knex.select({ id: employeeId})
+  const result = await knex.select({ employee_id: employeeId})
     .from('employees')
     .whereNull('deleted_at')
-    .join('performance_reviews', 'employees.id', '=', 'performance_reviews.assignee_employee_id')
+    .join('performance_reviews', 'employees.employee_id', '=', 'performance_reviews.assignee_employee_id')
     // .returning(selectableProps) // TODO: not supported in Sqlite3 :(
     .timeout(timeout)
 
@@ -109,7 +109,7 @@ const putEmployee = async (req, res) => {
   props.updated_at = new Date() // TODO: throw into a file in /lib and import
 
   const result = await knex('employees')
-    .where({ id: employeeId })
+    .where({ employee_id: employeeId })
     .update({ ...props })
 
   if (result) {
@@ -132,7 +132,7 @@ const deleteEmployee = async (req, res) => {
   // props.deleted_at = new Date() // TODO: throw into a file in /lib and import
 
   const result = await knex('employees')
-    .where({ id: employeeId })
+    .where({ employee_id: employeeId })
     .update({ deleted_at: new Date() })
 
   if (result) {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>{{ error.statusCode }}</h1>
+    <h1>{{ error.statusCode }} Error</h1>
     <p>{{ error.message }}</p>
   </div>
 </template>

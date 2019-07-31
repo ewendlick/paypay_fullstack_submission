@@ -2,9 +2,9 @@ exports.up = knex => {
   return knex.schema.createTable('performance_reviews', table => {
     // table.charset('utf8mb4') // TODO: use with MySQL
     // table.collate('utf8mb4_unicode_ci')
-    table.increments('id').primary().unsigned()
-    table.integer('target_employee_id').references('employees.id').unsigned().index()
-    table.integer('assignee_employee_id').references('employees.id').unsigned().index()
+    table.increments('performance_review_id').primary().unsigned()
+    table.integer('target_employee_id').references('employees.employee_id').unsigned().index()
+    table.integer('assignee_employee_id').references('employees.employee_id').unsigned().index()
     table.text('payload') // TODO: JSON type - table.json('payload'). See if sqlite can do it with a default installation
     table.timestamp('completed_at')
     table.timestamp('created_at').defaultTo(knex.fn.now())

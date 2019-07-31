@@ -4,7 +4,7 @@
       <img src="~/assets/images/logo.png">
       <v-spacer />
       <!-- TODO: hook up to route name -->
-      <v-toolbar-title>Admin</v-toolbar-title>
+      <v-toolbar-title>Front</v-toolbar-title>
       <v-spacer />
       <template v-if="employee">
         <v-toolbar-title>{{ employee.name }}</v-toolbar-title>
@@ -39,7 +39,7 @@ export default {
 <style lang="scss">
   @import "~/assets/styles/base.scss";
 
-  .theme--light.v-sheet {
-    background: linear-gradient(107deg, rgb(39, 217, 199) 0%, rgb(39, 217, 98) 100%);
+  .theme--light.v-sheet > .v-toolbar__content, .v-card__title {
+    background: linear-gradient(107deg, rgb(39, 217, 199) 0%, rgb(202, 238, 214) 100%);
   }
 </style>

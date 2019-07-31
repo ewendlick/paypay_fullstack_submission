@@ -4,7 +4,7 @@
   "description": "An example knex app structure.",
   "main": "server/index.js",
   "scripts": {
-    "start": "./server/start.js",
+    "start": "node ./server/start.js",
     "db:migrate": "npx knex migrate:latest",
     "db:rollback": "npx knex migrate:rollback",
     "db:seed": "npx knex seed:run"

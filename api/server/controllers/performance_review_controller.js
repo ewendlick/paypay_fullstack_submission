@@ -7,7 +7,7 @@ const timeout = 1000
 // TODO: move to /lib
 const scrub = (props) => {
   if (!props || props.length === 0) return
-  const notAllowedKeys = ['id', 'created_at', 'updated_at', 'deleted_at']
+  const notAllowedKeys = ['performance_review_id', 'created_at', 'updated_at', 'deleted_at']
 
   notAllowedKeys.forEach(notAllowedKey => delete props['notAllowedKey'])
   console.log(props)
@@ -36,7 +36,8 @@ const getAssignedEmployeePerformanceReviewsForUser = async (req, res) => {
   const result = await knex.select()
     .from('performance_reviews')
     .whereNull('performance_reviews.deleted_at')
-    .join('employees', 'performance_reviews.assignee_employee_id', '=', 'employees.id')
+    .where('performance_reviews.assignee_employee_id', '=', employeeId)
+    .join('employees', 'performance_reviews.target_employee_id', '=', 'employees.employee_id')
     // .returning(selectableProps) // TODO: not supported in Sqlite3 :(
     .timeout(timeout)
 
@@ -61,7 +62,8 @@ const getTargetEmployeePerformanceReviewsForUser = async (req, res) => {
   const result = await knex.select()
     .from('performance_reviews')
     .whereNull('performance_reviews.deleted_at')
-    .join('employees', 'performance_reviews.target_employee_id', '=', 'employees.id')
+    .where('performance_reviews.target_employee_id', '=', employeeId)
+    .join('employees', 'performance_reviews.assignee_employee_id', '=', 'employees.employee_id')
     // .returning(selectableProps) // TODO: not supported in Sqlite3 :(
     .timeout(timeout)
 
@@ -98,7 +100,7 @@ const getPerformanceReview = async (req, res) => {
 
   const result = await knex.select()
     .from('performance_reviews')
-    .where({ id: performanceReviewId })
+    .where({ performance_review_id: performanceReviewId })
 
   if (result) {
     res.json({
@@ -119,15 +121,14 @@ const putPerformanceReview = async (req, res) => {
 
   props = scrub(props)
 
+  // TODO: possible bug. Revisit this
   const now = new Date() // TODO: throw into a file in /lib and import
   props.updated_at = now
   props.completed_at = now
 
   const result = await knex('performance_reviews')
-    .where({ id: performanceReviewId })
+    .where({ performance_review_id: performanceReviewId })
     .update(props)
-
-  console.log(result)
 
   if (result) {
     res.json({
