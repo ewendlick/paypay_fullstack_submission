@@ -36,6 +36,7 @@ Knex
   default.vue -- container for all pages
   error.vue -- error page
 /pages -- main components for each route
+/plugins -- plugins
 /static -- assets accessible via URL
 /store -- Vuex store
 .env -- holds environmental settings

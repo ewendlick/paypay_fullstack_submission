@@ -46,16 +46,6 @@
       Create new employee ＋
     </v-btn>
 
-    <!--
-    <v-layout justify-end>
-      <v-flex xs6>
-        <v-btn large outlined color="light-blue accent-3" class="ma-4" @click="create">
-          Create new employee ＋
-        </v-btn>
-      </v-flex>
-    </v-layout>
-    -->
-
     <v-layout row wrap>
       <v-flex xs12 md10>
         <!-- Vuetify's table doesn't play well with SSR -->
