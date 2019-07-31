@@ -4,9 +4,11 @@
 // TODO: tests
 
 const knex = require('../../config/database')
+const moment = require('moment')
 
 // TODO: implement for non-Sqlite3 databases
 // Properties that are allowed to be selected from the database for reading.
+// usage: .returning(selectableProps)
 /*
 const selectableProps = [
   'id',
@@ -38,10 +40,9 @@ const postEmployees = async (req, res) => {
   // TODO: one line in all locations
   props = scrub(props)
 
-  props.created_at = new Date() // TODO: throw into a file in /lib and import
+  props.created_at = moment().format('YYYY-MM-DD hh:mm:ss')
 
   const result = await knex.insert(props)
-    // .returning(selectableProps) // NOTE: Not supported by Sqlite3
     .into('employees')
     .timeout(timeout)
 
@@ -58,8 +59,7 @@ const postEmployees = async (req, res) => {
 const getEmployees = async (req, res) => {
   const result = await knex.select()
     .from('employees')
-    .whereNull('employees.deleted_at')
-    // .returning(selectableProps) // TODO: not supported in Sqlite3 :(
+    .whereNull('deleted_at')
     .timeout(timeout)
 
   // TODO: error checking
@@ -78,18 +78,17 @@ const getEmployees = async (req, res) => {
 const getEmployee = async (req, res) => {
   const employeeId = req.params.id
 
-  const result = await knex.select({ employee_id: employeeId})
+  const result = await knex.select()
     .from('employees')
+    .where({ employee_id: employeeId })
     .whereNull('deleted_at')
-    .join('performance_reviews', 'employees.employee_id', '=', 'performance_reviews.assignee_employee_id')
-    // .returning(selectableProps) // TODO: not supported in Sqlite3 :(
     .timeout(timeout)
 
   // TODO: error checking
   if (result) {
     res.json({
       ok: true,
-      message: 'Employees found',
+      message: 'Employee found',
       data: result
     })
   } else {
@@ -101,15 +100,15 @@ const getEmployee = async (req, res) => {
 const putEmployee = async (req, res) => {
   const employeeId = req.params.id
   // TODO: early returns on all PUT/POST/DELETE without payloads with 422 errors
-  let props = req.body.employee
+  let props = req.body.data
 
   props = scrub(props)
 
-  props.updated_at = new Date() // TODO: throw into a file in /lib and import
+  props.updated_at = moment().format('YYYY-MM-DD hh:mm:ss')
 
   const result = await knex('employees')
     .where({ employee_id: employeeId })
-    .update({ ...props })
+    .update(props)
 
   if (result) {
     res.json({
@@ -124,15 +123,10 @@ const putEmployee = async (req, res) => {
 
 const deleteEmployee = async (req, res) => {
   const employeeId = req.params.id
-  let props = req.body.employee
-
-  props = scrub(props)
-
-  // props.deleted_at = new Date() // TODO: throw into a file in /lib and import
 
   const result = await knex('employees')
     .where({ employee_id: employeeId })
-    .update({ deleted_at: new Date() })
+    .update({ deleted_at: moment().format('YYYY-MM-DD hh:mm:ss') })
 
   if (result) {
     res.json({

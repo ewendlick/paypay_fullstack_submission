@@ -5,7 +5,7 @@ const router = require('express').Router()
 const {
   postEmployees,
   getEmployees,
-  // getEmployee,
+  getEmployee,
   putEmployee,
   deleteEmployee
 } = require('../controllers/employee_controller')
@@ -15,7 +15,7 @@ router.route('/employees')
   .get(getEmployees)
 
 router.route('/employees/:id') // TODO: Document naming convention regarding singular/plural
-  // .get(getEmployee)
+  .get(getEmployee)
   .put(putEmployee)
   .delete(deleteEmployee)
 

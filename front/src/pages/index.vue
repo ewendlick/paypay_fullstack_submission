@@ -13,7 +13,7 @@
               <v-flex xs12>
                 <template v-if="editingItem.completed_at">
                   <!-- TODO: filter for human-readable date -->
-                  <p>You finished this performance review on {{ editingItem.completed_at | date }}</p>
+                  <p>You finished this performance review on {{ editingItem.completed_at }}</p>
                     <v-textarea v-model.lazy="editingItem.payload"
                                  name="payload"
                                  label="Review notes"
@@ -103,18 +103,6 @@ export default {
         payload: '',
         completed_at: ''
       }
-    }
-  },
-  filters: {
-    date: (date) => {
-      date = String(date)
-      // HACK: Unix epoch 3 additional characters at the end
-      // TODO: track down the source of the bug (bad data? Knex not ok with new Date?)
-      if (date.length > 10) {
-        console.log('Invalid Unix epoch received')
-        date = date.slice(0, (date.length - 10) * -1)
-      }
-      return moment.unix(date).format('YYYY/MM/DD hh:mm')
     }
   },
   watch: {

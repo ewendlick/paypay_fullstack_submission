@@ -56,8 +56,9 @@
       </v-flex>
 
       <v-flex>
+        <!-- TODO: color of button -->
         <v-btn large @click="create">
-          Create ＋
+          Create new employee ＋
           <!--
           <v-icon right>
             search
@@ -77,9 +78,8 @@
             :no-data-text="isNoResults ? 'No data' : ''"
             :page.sync="page"
             :items-per-page="10"
-            show-expand
             :items="employees"
-            item-key="employee_name"
+            item-key="employee_id"
             hide-default-footer
             class="elevation-1">
 
@@ -90,31 +90,11 @@
               </v-toolbar>
             </template>
 
-            <!--
-              TODO: linked performance reviews shown in here
-            :expanded.sync="expanded"
-            <template v-slot:expanded-item="{ employees, headers }">
-              <td :colspan="headers.length">
-                <v-toolbar-title>Performance Reviews</v-toolbar-title>
-                <v-layout row wrap>
-                  <v-flex xs12 ma-3>
-                  </v-flex>
-                  <v-flex xs6>
-
-                  </v-flex>
-                  <v-flex xs6>
-
-                  </v-flex>
-                </v-layout>
-              </td>
-            </template>
-            -->
-
             <template v-slot:item.action="{ item }">
               <v-btn text @click="edit(item.employee_id)">
                 Edit ✏️
               </v-btn>
-              <v-btn text @click="remove">
+              <v-btn text @click="remove(item.employee_id)">
                 Delete 🗑
               </v-btn>
             </template>
@@ -127,8 +107,6 @@
           </v-data-table>
         </no-ssr>
       </v-flex>
-
-
     </v-layout>
   </div>
 </template>
@@ -151,7 +129,6 @@ export default {
         employee_name: null,
         email: null
       },
-      // expanded: [],
       page: 1,
       isDeleteMode: false, // TODO: active for certain users, or from a button click
       // Vuetify table requires that this be reactive
@@ -212,6 +189,7 @@ export default {
   },
   methods: {
     create () {
+      // BUG: this isn't doing anything
       this.errors.clear()
 
       this.isCreate = true
@@ -224,14 +202,16 @@ export default {
       this.isEditFormShown = true
     },
     async edit (employeeId) {
+      console.log('edit', employeeId)
       this.errors.clear()
 
       this.isCreate = false
 
-      this.editingIndex = this.employees.findIndex(item => item.employee_id === employeeId)
+      // this.editingIndex = this.employees.findIndex(item => item.employee_id === employeeId)
 
       // Gets newest data from API. This could just use information we have and skip the API call
       const response = await this.$axios.$get(`http://localhost:9000/employees/${employeeId}`)
+      console.log('edt', response)
       this.editingItem = response.data[0]
 
       this.isEditFormShown = true
@@ -254,18 +234,22 @@ export default {
 
       // TODO: link up API return messages to display to the user
 
-      // Could just slip the content into this.employees...
+      // NOTE: Could just slip the content into this.employees...
       this.refresh()
 
       this.close()
     },
     async refresh () {
       const response = await this.$axios.$get('http://localhost:9000/employees')
-      this.employess = response[0]
+      this.employees = response.data
     },
-    remove () {
-      alert('Unimplemented')
-      // TODO: trigger a popup prompting about deletion
+    async remove (employeeId) {
+      // TODO: trigger a popup prompting about deletion, or some sort of indication to the user
+      // TODO: toastr or Vuetify's options
+      const response = await this.$axios.$delete(`http://localhost:9000/employees/${employeeId}`)
+
+      // NOTE: Could just splice out the content from this.employees...
+      this.refresh()
     },
     close () {
       this.isEditFormShown = false

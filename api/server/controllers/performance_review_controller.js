@@ -1,34 +1,18 @@
 'use strict'
 
 const knex = require('../../config/database')
+const moment = require('moment')
 
 const timeout = 1000
 
-// TODO: move to /lib
+// TODO: move someplace better
 const scrub = (props) => {
   if (!props || props.length === 0) return
   const notAllowedKeys = ['performance_review_id', 'created_at', 'updated_at', 'deleted_at']
 
   notAllowedKeys.forEach(notAllowedKey => delete props['notAllowedKey'])
-  console.log(props)
   return props
 }
-
-/*
-const postPerformanceReviews = (req, res, next) => {
-  const employeeId = req.params.id
-  const props = req.body.performanceReview
-
-  PerformanceReview.create({ ...props, employee_id: employeeId })
-    .then(performanceReview => res.json({
-      ok: true,
-      message: 'PerformanceReview created',
-      performanceReview,
-      employeeId
-    }))
-    .catch(next)
-}
-*/
 
 // FRONT
 const getAssignedEmployeePerformanceReviewsForUser = async (req, res) => {
@@ -38,12 +22,10 @@ const getAssignedEmployeePerformanceReviewsForUser = async (req, res) => {
     .whereNull('performance_reviews.deleted_at')
     .where('performance_reviews.assignee_employee_id', '=', employeeId)
     .join('employees', 'performance_reviews.target_employee_id', '=', 'employees.employee_id')
-    // .returning(selectableProps) // TODO: not supported in Sqlite3 :(
     .timeout(timeout)
 
   // TODO: error checking
   if (result) {
-    console.log(result)
     return res.json({
       ok: true,
       message: 'Performance Reviews found',
@@ -51,7 +33,6 @@ const getAssignedEmployeePerformanceReviewsForUser = async (req, res) => {
     })
   } else {
     // TODO: error system in place
-    // return res.status(404)
   }
 }
 
@@ -64,7 +45,6 @@ const getTargetEmployeePerformanceReviewsForUser = async (req, res) => {
     .whereNull('performance_reviews.deleted_at')
     .where('performance_reviews.target_employee_id', '=', employeeId)
     .join('employees', 'performance_reviews.assignee_employee_id', '=', 'employees.employee_id')
-    // .returning(selectableProps) // TODO: not supported in Sqlite3 :(
     .timeout(timeout)
 
   // TODO: error checking
@@ -80,27 +60,13 @@ const getTargetEmployeePerformanceReviewsForUser = async (req, res) => {
   }
 }
 
-/*
-const getPerformanceReviews = (req, res) => {
-  const employeeId = req.params.id
-
-  PerformanceReview.findAll()
-    .then(performanceReviews => res.json({
-      ok: true,
-      message: 'PerformanceReviews found',
-      performanceReviews,
-      employeeId
-    }))
-    .catch(next)
-}
-*/
-
 const getPerformanceReview = async (req, res) => {
   const performanceReviewId = req.params.id
 
   const result = await knex.select()
     .from('performance_reviews')
     .where({ performance_review_id: performanceReviewId })
+    .whereNull('deleted_at')
 
   if (result) {
     res.json({
@@ -117,12 +83,9 @@ const putPerformanceReview = async (req, res) => {
   const performanceReviewId = req.params.id
   let props = req.body.data
 
-  console.log(performanceReviewId)
-
   props = scrub(props)
 
-  // TODO: possible bug. Revisit this
-  const now = new Date() // TODO: throw into a file in /lib and import
+  const now = moment().format('YYYY-MM-DD hh:mm:ss') // TODO: throw into a file in /lib and import
   props.updated_at = now
   props.completed_at = now
 
@@ -141,26 +104,9 @@ const putPerformanceReview = async (req, res) => {
   }
 }
 
-/*
-const deletePerformanceReview = (req, res) => {
-  const performanceReviewId = req.params.id
-
-  PerformanceReview.destroy(performanceReviewId)
-    .then(deleteCount => res.json({
-      ok: true,
-      message: 'PerformanceReview deleted',
-      deleteCount
-    }))
-    .catch(next)
-}
-*/
-
 module.exports = {
-  // postPerformanceReviews
   getAssignedEmployeePerformanceReviewsForUser,
   getTargetEmployeePerformanceReviewsForUser,
-  // getPerformanceReviews,
   getPerformanceReview,
   putPerformanceReview
-  // deletePerformanceReview
 }
