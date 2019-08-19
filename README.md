@@ -56,6 +56,7 @@ There's a huge amount of similarity between the /front and /admin folders, but t
 - API-side validation
 - Login
 - Tests
+- Full functionality (Requires 3 DB tables, but I threw together just 2)
 - *Icons
 
 ## Assumptions
@@ -77,3 +78,12 @@ Create a package.json script to do everything as opposed to running something fr
 
 Icons are not displaying. They should work out of the box with Vuetify, but something strange is going on. I've tried importing the icon stylesheets in a number of places and have confirmed that they load. I have tried both Material Design and FontAwesome
 To take a look at all of my attempts, please see the "feature/icons" branch
+
+Later determined that this was a bug in Vuetify, possibly fixed in version 2.04 (https://github.com/vuetifyjs/vuetify/releases/tag/v2.0.4)
+
+# Post-mortem
+I should have spent more time implementing all functionality. Ultimately, it would not have been much more time adding the third DB table and creating another page.
+
+My experience with APIs has always involved frameworks, so in attempting to write my own I ran into issues that I had not given heavy consideration (mostly in how to handle errors).
+
+I still prefer Bootstrap over Vuetify (and Element UI) due to ease of setup and performance. I need to try out Buefy.

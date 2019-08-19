@@ -17,10 +17,6 @@ npm run start
     performance_review_controller.js
     employee_controller.js
   /helpers -- modules for common functions that sit outside controllers/models
-  /models  -- simple collections of db queries and utilities for employee data
-    index.js -- creates a single object with each model as a property
-    performance_review.js
-    employee.js
   /routes -- defines API endpoints and passes requests to corresponding controllers
     performance_review_routes.js
     employee_routes.js
