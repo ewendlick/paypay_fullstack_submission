@@ -14,7 +14,7 @@
         "@nuxtjs/vuetify": "^1.0.1",
         "cookie-universal-nuxt": "^2.0.16",
         "dotenv": "^8.0.0",
-        "moment": "^2.24.0",
+        "moment": "^2.29.2",
         "nuxt": "^2.8.1",
         "nuxt-validate": "^1.0.1",
         "vue2-transitions": "^0.3.0"
